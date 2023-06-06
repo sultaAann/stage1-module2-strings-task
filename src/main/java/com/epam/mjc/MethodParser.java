@@ -1,5 +1,10 @@
 package com.epam.mjc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
+
 public class MethodParser {
 
     /**
@@ -20,6 +25,33 @@ public class MethodParser {
      * @return {@link MethodSignature} object filled with parsed values from source string
      */
     public MethodSignature parseFunction(String signatureString) {
-        throw new UnsupportedOperationException("You should implement this method.");
+        signatureString = removeCharAt(signatureString, signatureString.length() - 1);
+        String[] str = signatureString.split("\\(");
+        String[] atm = str[0].split(" ");
+        List<MethodSignature.Argument> args = new ArrayList<>();
+
+        if (str.length > 1) {
+            String[] aa = str[1].split(",");
+            for (String arg : aa) {
+                String[] aT = arg.trim().split(" ");
+                args.add(new MethodSignature.Argument(aT[0], aT[1]));
+            }
+        }
+        MethodSignature res;
+        if (atm.length > 2) {
+            res = new MethodSignature(atm[2], args);
+            res.setAccessModifier(atm[0]);
+            res.setReturnType(atm[1]);
+            return res;
+        } else {
+            res = new MethodSignature(atm[1], args);
+            res.setReturnType(atm[0]);
+            return res;
+        }
     }
+
+    public static String removeCharAt(String str, int index) {
+        return str.substring(0, index) + str.substring(index + 1);
+    }
+
 }
